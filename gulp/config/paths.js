@@ -45,4 +45,14 @@ module.exports = {
     srcFonts: `${src}/scss/_local-fonts.scss`,
     dist: `${dest}/fonts/`,
   },
+  svg: {
+    src: `${src}/img/svg/**/*.svg`,
+    dist: `${src}/scss/`,
+    watch: `${src}/img/svg/**/*.svg`,
+  },
+  svg_sprite: {
+    src: `${src}/img/svg/**/*.svg`,
+    dist: `${src}/img/svg/`,
+    watch: `${src}/img/svg/**/*.svg`,
+  },
 };

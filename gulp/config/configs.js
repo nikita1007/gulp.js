@@ -64,4 +64,49 @@ module.exports = {
       },
     },
   },
+  svg: {
+    svgmin: {
+      multipass: true,
+      js2svg: {
+        pretty: true,
+      },
+      plugins: [
+        {
+          removeComments: true,
+        },
+        {
+          removeEmptyContainers: true,
+        },
+      ],
+    },
+    svgCss: {
+      fileName: "_svg",
+      fileExt: "scss",
+      cssPrefix: "--svg__",
+      addSize: false,
+    },
+  },
+  svg_sprite: {
+    svgmin: {
+      multipass: true,
+      js2svg: {
+        pretty: true,
+      },
+      plugins: [
+        {
+          removeComments: true,
+        },
+        {
+          removeEmptyContainers: true,
+        },
+      ],
+    },
+    sprite: {
+      mode: {
+        stack: {
+          sprite: "../sprite.svg",
+        },
+      },
+    },
+  },
 };

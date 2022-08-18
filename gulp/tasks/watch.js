@@ -26,6 +26,14 @@ module.exports = function watching() {
       "all",
       browserSync.reload
     );
+    watch(paths.svg.watch, series("svg", "styles")).on(
+      "all",
+      browserSync.reload
+    );
+    watch(paths.svg_sprite.watch, series("svg_sprite", "rastr")).on(
+      "all",
+      browserSync.reload
+    );
     resolve();
   });
 };
