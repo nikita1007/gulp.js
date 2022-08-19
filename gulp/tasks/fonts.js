@@ -88,6 +88,8 @@ function addFont(font_items) {
 module.exports = function fonts() {
   return new Promise(async (resolve, reject) => {
     await fs.writeFile(srcFonts, "", () => {});
+    fs.appendFile(srcFonts, `@import 'mixins';\r\n`, () => {});
+    
     await fs.readdir(appFonts, (err, items) => {
       if (items) {
         items.forEach((item) => {
