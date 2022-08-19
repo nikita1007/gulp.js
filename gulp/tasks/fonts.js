@@ -20,6 +20,71 @@ let fontWeights = {
   Black: "900",
 };
 
+function addFont(font_items) {
+  let c_fontname;
+  let fontName;
+  font_items.forEach((font) => {
+    let fontname = font.split("."),
+      fontExt,
+      fontWeight,
+      fontStyle;
+    fontExt = fontname[1];
+    fontFileName = fontname[0];
+    fontWeight = fontFileName.split("-")[1];
+    fontName = fontFileName
+      .split("-")[0]
+      .replace(fontFileName[0], fontFileName[0].toUpperCase());
+
+    if (c_fontname != fontFileName) {
+      if (fontExt == "woff" || fontExt == "woff2") {
+        for (var key in fontWeights) {
+          if (fontWeight.toLowerCase() === key.toLowerCase()) {
+            fontWeight = fontWeights[key];
+          }
+        }
+        fontStyle =
+          fontFileName.toLowerCase().indexOf("italic") !== -1
+            ? "italic"
+            : undefined;
+
+        if (fontWeight && fontStyle) {
+          fs.appendFile(
+            srcFonts,
+            `@include font-face("${fontName}", "${fontFileName}", ${fontWeight}, "${fontStyle}");\r\n`,
+            () => {}
+          );
+        } else if (!fontWeight && fontStyle) {
+          fs.appendFile(
+            srcFonts,
+            `@include font-face("${fontName}", "${fontFileName}", 400, "${fontStyle}");\r\n`,
+            () => {}
+          );
+        } else if (fontWeight && !fontStyle) {
+          fs.appendFile(
+            srcFonts,
+            `@include font-face("${fontName}", "${fontFileName}", ${fontWeight});\r\n`,
+            () => {}
+          );
+        } else {
+          fs.appendFile(
+            srcFonts,
+            `@include font-face("${fontName}", "${fontFileName}", 400);\r\n`,
+            () => {}
+          );
+        }
+
+        console.log(`
+        Added new font: ${fontFileName}.
+        ----------------------------------------------------------------------------------
+        Please, move mixin call from 'src/scss/_local-fonts.scss' to 'src/scss/_fonts.scss' and then change it!
+        ----------------------------------------------------------------------------------
+        `);
+      }
+    }
+    c_fontname = fontFileName;
+  });
+}
+
 module.exports = function fonts() {
   return new Promise(async (resolve, reject) => {
     await fs.writeFile(srcFonts, "", () => {});
@@ -29,129 +94,13 @@ module.exports = function fonts() {
           if (fs.lstatSync(`${appFonts}${item}`).isDirectory()) {
             fs.readdir(`${appFonts}${item}`, (err, items) => {
               if (items) {
-                let c_fontname;
-                items.forEach((item) => {
-                  let fontname = item.split("."),
-                    fontExt;
-                  fontExt = fontname[1];
-                  fontname = fontname[0];
-
-                  let fontWeight, fontStyle;
-                  if (c_fontname != fontname) {
-                    if (fontExt == "woff" || fontExt == "woff2") {
-                      for (var key in fontWeights) {
-                        if (
-                          fontname.toLowerCase().indexOf(key.toLowerCase()) !==
-                          -1
-                        ) {
-                          fontWeight = fontWeights[key];
-                        }
-                      }
-                      fontStyle =
-                        fontname.toLowerCase().indexOf("italic") !== -1
-                          ? "italic"
-                          : undefined;
-
-                      if (fontWeight && fontStyle) {
-                        fs.appendFile(
-                          srcFonts,
-                          `@include font-face("${fontname}", "${fontname}", ${fontWeight}, "${fontStyle}");\r\n`,
-                          () => {}
-                        );
-                      } else if (!fontWeight && fontStyle) {
-                        fs.appendFile(
-                          srcFonts,
-                          `@include font-face("${fontname}", "${fontname}", 400, "${fontStyle}");\r\n`,
-                          () => {}
-                        );
-                      } else if (fontWeight && !fontStyle) {
-                        fs.appendFile(
-                          srcFonts,
-                          `@include font-face("${fontname}", "${fontname}", ${fontWeight});\r\n`,
-                          () => {}
-                        );
-                      } else {
-                        fs.appendFile(
-                          srcFonts,
-                          `@include font-face("${fontname}", "${fontname}", 400);\r\n`,
-                          () => {}
-                        );
-                      }
-
-                      console.log(`
-                      Added new font: ${fontname}.
-                      ----------------------------------------------------------------------------------
-                      Please, move mixin call from 'src/scss/_local-fonts.scss' to 'src/scss/_fonts.scss' and then change it!
-                      ----------------------------------------------------------------------------------
-                      `);
-                    }
-                  }
-                  c_fontname = fontname;
-                });
+                addFont(items);
               }
             });
           } else {
             fs.readdir(`${appFonts}`, (err, items) => {
               if (items) {
-                let c_fontname;
-                items.forEach((item) => {
-                  let fontname = item.split("."),
-                    fontExt;
-                  fontExt = fontname[1];
-                  fontname = fontname[0];
-
-                  let fontWeight, fontStyle;
-                  if (c_fontname != fontname) {
-                    if (fontExt == "woff" || fontExt == "woff2") {
-                      for (var key in fontWeights) {
-                        if (
-                          fontname.toLowerCase().indexOf(key.toLowerCase()) !==
-                          -1
-                        ) {
-                          fontWeight = fontWeights[key];
-                        }
-                      }
-                      fontStyle =
-                        fontname.toLowerCase().indexOf("italic") !== -1
-                          ? "italic"
-                          : undefined;
-
-                      if (fontWeight && fontStyle) {
-                        fs.appendFile(
-                          srcFonts,
-                          `@include font-face("${fontname}", "${fontname}", ${fontWeight}, "${fontStyle}");\r\n`,
-                          () => {}
-                        );
-                      } else if (!fontWeight && fontStyle) {
-                        fs.appendFile(
-                          srcFonts,
-                          `@include font-face("${fontname}", "${fontname}", 400, "${fontStyle}");\r\n`,
-                          () => {}
-                        );
-                      } else if (fontWeight && !fontStyle) {
-                        fs.appendFile(
-                          srcFonts,
-                          `@include font-face("${fontname}", "${fontname}", ${fontWeight});\r\n`,
-                          () => {}
-                        );
-                      } else {
-                        fs.appendFile(
-                          srcFonts,
-                          `@include font-face("${fontname}", "${fontname}", 400);\r\n`,
-                          () => {}
-                        );
-                      }
-
-                      console.log(`
-                      Added new font: ${fontname}.
-                      ----------------------------------------------------------------------------------
-                      Please, move mixin call from 'src/scss/_local-fonts.scss' to 'src/scss/_fonts.scss' and then change it!
-                      ----------------------------------------------------------------------------------
-                      `);
-                    }
-                  }
-                  c_fontname = fontname;
-                });
+                addFont(items);
               }
             });
           }
