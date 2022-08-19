@@ -20,7 +20,7 @@ let fontWeights = {
   Black: "900",
 };
 
-function addFont(font_items) {
+function addFont(dir = null, font_items) {
   let c_fontname;
   let fontName;
   font_items.forEach((font) => {
@@ -47,30 +47,58 @@ function addFont(font_items) {
             ? "italic"
             : undefined;
 
-        if (fontWeight && fontStyle) {
-          fs.appendFile(
-            srcFonts,
-            `@include font-face("${fontName}", "${fontFileName}", ${fontWeight}, "${fontStyle}");\r\n`,
-            () => {}
-          );
-        } else if (!fontWeight && fontStyle) {
-          fs.appendFile(
-            srcFonts,
-            `@include font-face("${fontName}", "${fontFileName}", 400, "${fontStyle}");\r\n`,
-            () => {}
-          );
-        } else if (fontWeight && !fontStyle) {
-          fs.appendFile(
-            srcFonts,
-            `@include font-face("${fontName}", "${fontFileName}", ${fontWeight});\r\n`,
-            () => {}
-          );
+        if (dir) {
+          if (fontWeight && fontStyle) {
+            fs.appendFile(
+              srcFonts,
+              `@include font-face("${fontName}", "${dir}/${fontFileName}", ${fontWeight}, "${fontStyle}");\r\n`,
+              () => {}
+            );
+          } else if (!fontWeight && fontStyle) {
+            fs.appendFile(
+              srcFonts,
+              `@include font-face("${fontName}", "${dir}/${fontFileName}", 400, "${fontStyle}");\r\n`,
+              () => {}
+            );
+          } else if (fontWeight && !fontStyle) {
+            fs.appendFile(
+              srcFonts,
+              `@include font-face("${fontName}", "${dir}/${fontFileName}", ${fontWeight});\r\n`,
+              () => {}
+            );
+          } else {
+            fs.appendFile(
+              srcFonts,
+              `@include font-face("${fontName}", "${dir}/${fontFileName}", 400);\r\n`,
+              () => {}
+            );
+          }
         } else {
-          fs.appendFile(
-            srcFonts,
-            `@include font-face("${fontName}", "${fontFileName}", 400);\r\n`,
-            () => {}
-          );
+          if (fontWeight && fontStyle) {
+            fs.appendFile(
+              srcFonts,
+              `@include font-face("${fontName}", "${fontFileName}", ${fontWeight}, "${fontStyle}");\r\n`,
+              () => {}
+            );
+          } else if (!fontWeight && fontStyle) {
+            fs.appendFile(
+              srcFonts,
+              `@include font-face("${fontName}", "${fontFileName}", 400, "${fontStyle}");\r\n`,
+              () => {}
+            );
+          } else if (fontWeight && !fontStyle) {
+            fs.appendFile(
+              srcFonts,
+              `@include font-face("${fontName}", "${fontFileName}", ${fontWeight});\r\n`,
+              () => {}
+            );
+          } else {
+            fs.appendFile(
+              srcFonts,
+              `@include font-face("${fontName}", "${fontFileName}", 400);\r\n`,
+              () => {}
+            );
+          }
         }
 
         console.log(`
@@ -89,14 +117,14 @@ module.exports = function fonts() {
   return new Promise(async (resolve, reject) => {
     await fs.writeFile(srcFonts, "", () => {});
     fs.appendFile(srcFonts, `@import 'mixins';\r\n`, () => {});
-    
-    await fs.readdir(appFonts, (err, items) => {
-      if (items) {
-        items.forEach((item) => {
-          if (fs.lstatSync(`${appFonts}${item}`).isDirectory()) {
-            fs.readdir(`${appFonts}${item}`, (err, items) => {
+
+    await fs.readdir(appFonts, (err, dirs) => {
+      if (dirs) {
+        dirs.forEach((dir) => {
+          if (fs.lstatSync(`${appFonts}${dir}`).isDirectory()) {
+            fs.readdir(`${appFonts}${dir}`, (err, items) => {
               if (items) {
-                addFont(items);
+                addFont(dir, items);
               }
             });
           } else {
