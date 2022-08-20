@@ -52,7 +52,7 @@ module.exports = {
   },
   svg_sprite: {
     src: `${src}/img/svg/**/*.svg`,
-    dist: `${src}/img/svg/`,
+    dist: `${dest}/img/svg/`,
     watch: `${src}/img/svg/**/*.svg`,
   },
 };
